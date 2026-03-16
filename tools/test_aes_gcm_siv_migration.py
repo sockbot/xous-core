@@ -77,22 +77,17 @@ class TestRfc8452AppendixC256NoAad(unittest.TestCase):
 class TestRfc8452AppendixC256WithAad(unittest.TestCase):
     """RFC 8452 Appendix C.2: AEAD_AES_256_GCM_SIV test vectors WITH AAD.
 
-    These vectors verify RFC-correct behavior. The new cryptography-based
-    implementation must pass these. The old pyaesni-based implementation had
-    known deviations from the RFC for the encrypt path (it used cbc256_encrypt
-    with a zero IV to emulate ECB, which produces incorrect results for some
-    inputs). Decrypt round-trips still worked because both paths used the same
-    (incorrect) primitive consistently.
+    These vectors verify RFC-correct behavior with 256-bit keys and AAD.
     """
 
-    def test_vector_256bit_with_aad(self):
-        """C.2 vector with AAD: 8-byte AAD, 8-byte plaintext, 256-bit key."""
+    def test_vector_256bit_1byte_aad_8byte_pt(self):
+        """C.2: 1-byte AAD, 8-byte plaintext, 256-bit key."""
         key = bytes.fromhex(
             '01000000000000000000000000000000'
             '00000000000000000000000000000000'
         )
         nonce = bytes.fromhex('030000000000000000000000')
-        aad = bytes.fromhex('0100000000000000')
+        aad = bytes.fromhex('01')
         plaintext = bytes.fromhex('0200000000000000')
         expected = bytes.fromhex(
             '1de22967237a813291213f267e3b452f'
@@ -107,18 +102,18 @@ class TestRfc8452AppendixC256WithAad(unittest.TestCase):
         pt = cipher2.decrypt(ct, aad)
         self.assertEqual(pt, plaintext)
 
-    def test_vector_256bit_with_12byte_aad(self):
-        """C.2 vector: 12-byte AAD, 12-byte plaintext, 256-bit key."""
+    def test_vector_256bit_1byte_aad_12byte_pt(self):
+        """C.2: 1-byte AAD, 12-byte plaintext, 256-bit key."""
         key = bytes.fromhex(
             '01000000000000000000000000000000'
             '00000000000000000000000000000000'
         )
         nonce = bytes.fromhex('030000000000000000000000')
-        aad = bytes.fromhex('010000000000000000000000')
+        aad = bytes.fromhex('01')
         plaintext = bytes.fromhex('020000000000000000000000')
         expected = bytes.fromhex(
-            '91c6b0c0a36024bead310795a8e62e6d'
-            'f9f09ff3d16f3f6dfcc1b57c8419c84a'
+            '163d6f9cc1b346cd453a2e4cc1a4a19a'
+            'e800941ccdc57cc8413c277f'
         )
 
         cipher = AES_GCM_SIV(key, nonce)
@@ -129,19 +124,18 @@ class TestRfc8452AppendixC256WithAad(unittest.TestCase):
         pt = cipher2.decrypt(ct, aad)
         self.assertEqual(pt, plaintext)
 
-    def test_vector_256bit_with_20byte_aad(self):
-        """C.2 vector: 20-byte AAD, 18-byte plaintext, 256-bit key."""
+    def test_vector_256bit_1byte_aad_16byte_pt(self):
+        """C.2: 1-byte AAD, 16-byte plaintext, 256-bit key."""
         key = bytes.fromhex(
             '01000000000000000000000000000000'
             '00000000000000000000000000000000'
         )
         nonce = bytes.fromhex('030000000000000000000000')
-        aad = bytes.fromhex('0100000000000000000000000000000002000000')
-        plaintext = bytes.fromhex('030000000000000000000000000000000400')
+        aad = bytes.fromhex('01')
+        plaintext = bytes.fromhex('02000000000000000000000000000000')
         expected = bytes.fromhex(
-            'b43140a7e1fa5ac6f25a16a05aca0f87'
-            '66ec6e46fd254054a7759da0be064ad0'
-            '9c1a'
+            'c91545823cc24f17dbb0e9e807d5ec17'
+            'b292d28ff61189e8e49f3875ef91aff7'
         )
 
         cipher = AES_GCM_SIV(key, nonce)
