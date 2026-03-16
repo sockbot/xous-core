@@ -78,9 +78,30 @@ $
 
 For more about `i18n_helper.py` please see the locales [README](../locales/README.md#internationalization-helper)
 
-## Testing
+## PDDB Analysis Tools
 
-_TBD_
+The following Python scripts are used for PDDB backup analysis and debugging:
+
+- `backalyzer.py` — Analyzes backup images
+- `pddbdbg.py` — PDDB debug/analysis tool
+- `pddbcommon.py` — Shared PDDB library
+- `pddbci.py` / `pddbci-btest.py` — CI test runners
+
+### Python Dependencies
+
+These scripts require the following Python packages:
+
+```
+pip install pycryptodome cryptography bcrypt
+```
+
+Minimum versions: `cryptography >= 42.0.0` (requires OpenSSL ≥ 3.2.0 for AES-GCM-SIV support).
+
+### Running Tests
+
+```
+python tools/test_aes_gcm_siv_migration.py
+```
 
 ## Contribution Guidelines
 
